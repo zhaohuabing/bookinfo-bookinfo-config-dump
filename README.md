@@ -1,3 +1,4 @@
+![](https://istio.io/docs/examples/bookinfo/noistio.svg)
 ```bash
 master $ kubectl get pod -o wide
 NAME                             READY   STATUS    RESTARTS   AGE    IP           NODE     NOMINATED NODE   READINESS GATES
