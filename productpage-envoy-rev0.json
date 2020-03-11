@@ -1,13 +1,13 @@
 {
   "node": {
-    "id": "sidecar~10.32.0.19~productpage-v1-c7765c886-mlpnt.default~default.svc.cluster.local",
+    "id": "sidecar~10.32.0.14~productpage-v1-7d6cfb7dfd-rdlsh.default~default.svc.cluster.local",
     "cluster": "productpage.default",
     "locality": {
       
       
       
     },
-    "metadata": {"CLUSTER_ID":"Kubernetes","CONFIG_NAMESPACE":"default","EXCHANGE_KEYS":"NAME,NAMESPACE,INSTANCE_IPS,LABELS,OWNER,PLATFORM_METADATA,WORKLOAD_NAME,CANONICAL_TELEMETRY_SERVICE,MESH_ID,SERVICE_ACCOUNT","INCLUDE_INBOUND_PORTS":"9080","INSTANCE_IPS":"10.32.0.19","INTERCEPTION_MODE":"REDIRECT","ISTIO_PROXY_SHA":"istio-proxy:a7b2578494d79fe098f0e99282e0236946562fa0","ISTIO_VERSION":"1.4.2","LABELS":{"app":"productpage","pod-template-hash":"c7765c886","version":"v1"},"MESH_ID":"cluster.local","NAME":"productpage-v1-c7765c886-mlpnt","NAMESPACE":"default","OWNER":"kubernetes://api/apps/v1/namespaces/default/deployments/productpage-v1","POD_NAME":"productpage-v1-c7765c886-mlpnt","POD_PORTS":"[{\"containerPort\":9080,\"protocol\":\"TCP\"}]","SERVICE_ACCOUNT":"bookinfo-productpage","WORKLOAD_NAME":"productpage-v1","app":"productpage","pod-template-hash":"c7765c886","version":"v1"}
+    "metadata": {"CLUSTER_ID":"Kubernetes","CONFIG_NAMESPACE":"default","EXCHANGE_KEYS":"NAME,NAMESPACE,INSTANCE_IPS,LABELS,OWNER,PLATFORM_METADATA,WORKLOAD_NAME,CANONICAL_TELEMETRY_SERVICE,MESH_ID,SERVICE_ACCOUNT","INSTANCE_IPS":"10.32.0.14","INTERCEPTION_MODE":"REDIRECT","ISTIO_PROXY_SHA":"istio-proxy:73f240a29bece92a8882a36893ccce07b4a54664","ISTIO_VERSION":"1.5.0","LABELS":{"app":"productpage","pod-template-hash":"7d6cfb7dfd","security.istio.io/tlsMode":"istio","service.istio.io/canonical-name":"productpage","service.istio.io/canonical-revision":"v1","version":"v1"},"MESH_ID":"cluster.local","NAME":"productpage-v1-7d6cfb7dfd-rdlsh","NAMESPACE":"default","OWNER":"kubernetes://apis/apps/v1/namespaces/default/deployments/productpage-v1","POD_NAME":"productpage-v1-7d6cfb7dfd-rdlsh","POD_PORTS":"[{\"containerPort\":9080,\"protocol\":\"TCP\"}]","SDS":"true","SERVICE_ACCOUNT":"bookinfo-productpage","TRUSTJWT":"true","WORKLOAD_NAME":"productpage-v1"}
   },
   "stats_config": {
     "use_all_default_tags": false,
@@ -117,6 +117,10 @@
           "tag_name": "response_flags"
       },
       {
+          "regex": "(grpc_response_status=\\.=(.*?);\\.;)",
+          "tag_name": "grpc_response_status"
+      },
+      {
           "regex": "(connection_security_policy=\\.=(.+?);\\.;)",
           "tag_name": "connection_security_policy"
       },
@@ -139,6 +143,22 @@
       {
           "regex": "(tag\\.(.+?)\\.)",
           "tag_name": "tag"
+      },
+      {
+          "regex": "(source_canonical_service=\\.=(.+?);\\.;)",
+          "tag_name": "source_canonical_service"
+      },
+      {
+          "regex": "(destination_canonical_service=\\.=(.+?);\\.;)",
+          "tag_name": "destination_canonical_service"
+      },
+      {
+          "regex": "(source_canonical_revision=\\.=(.+?);\\.;)",
+          "tag_name": "source_canonical_revision"
+      },
+      {
+          "regex": "(destination_canonical_revision=\\.=(.+?);\\.;)",
+          "tag_name": "destination_canonical_revision"
       }
     ],
     "stats_matcher": {
@@ -220,6 +240,18 @@
         ]
       },
       {
+        "name": "sds-grpc",
+        "type": "STATIC",
+        "http2_protocol_options": {},
+        "connect_timeout": "10s",
+        "lb_policy": "ROUND_ROBIN",
+        "hosts": [{
+          "pipe": {
+            "path": "/etc/istio/proxy/SDS"
+           }
+        }]
+      },
+      {
         "name": "xds-grpc",
         "type": "STRICT_DNS",
         "dns_refresh_rate": "300s",
@@ -227,9 +259,46 @@
         "connect_timeout": "10s",
         "lb_policy": "ROUND_ROBIN",
         
+        
+        "tls_context": {
+          "common_tls_context": {
+            "alpn_protocols": [
+              "h2"
+            ],
+            
+             "tls_certificate_sds_secret_configs":[
+              {
+                "name":"default",
+                "sds_config":{
+                  "api_config_source":{
+                    "api_type":"GRPC",
+                    "grpc_services":[
+                      {
+                        "envoy_grpc":{
+                          "cluster_name": "sds-grpc"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "validation_context": {
+              "trusted_ca": {
+                
+                "filename": "./var/run/secrets/istio/root-cert.pem"
+                
+              },
+              "verify_subject_alt_name": ["istiod.istio-system.svc"]
+            }
+            
+          },
+        },
+        
+        
         "hosts": [
           {
-            "socket_address": {"address": "istio-pilot.istio-system", "port_value": 15010}
+            "socket_address": {"address": "istiod.istio-system.svc", "port_value": 15012}
           }
         ],
         "circuit_breakers": {
@@ -253,6 +322,7 @@
             "keepalive_time": 300
           }
         },
+        "max_requests_per_connection": 1,
         "http2_protocol_options": { }
       }
       
@@ -329,12 +399,14 @@
       "name": "envoy.zipkin",
       "config": {
         "collector_cluster": "zipkin",
-        "collector_endpoint": "/api/v1/spans",
+        "collector_endpoint": "/api/v2/spans",
+        "collector_endpoint_version": "HTTP_JSON",
         "trace_id_128bit": "true",
         "shared_span_context": "false"
       }
     }
   }
+  
   
   
 }
