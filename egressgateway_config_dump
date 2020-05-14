@@ -7,6 +7,9 @@
      "id": "router~10.44.0.3~istio-egressgateway-c78cd6657-wxwxk.istio-system~istio-system.svc.cluster.local",
      "cluster": "istio-egressgateway",
      "metadata": {
+      "NAMESPACE": "istio-system",
+      "EXCHANGE_KEYS": "NAME,NAMESPACE,INSTANCE_IPS,LABELS,OWNER,PLATFORM_METADATA,WORKLOAD_NAME,CANONICAL_TELEMETRY_SERVICE,MESH_ID,SERVICE_ACCOUNT",
+      "INSTANCE_IPS": "10.44.0.3",
       "SERVICE_ACCOUNT": "istio-egressgateway-service-account",
       "MESH_ID": "cluster.local",
       "SDS": "true",
@@ -19,20 +22,17 @@
       "POD_NAME": "istio-egressgateway-c78cd6657-wxwxk",
       "CLUSTER_ID": "Kubernetes",
       "LABELS": {
-       "app": "istio-egressgateway",
        "service.istio.io/canonical-revision": "1.5",
        "heritage": "Tiller",
        "pod-template-hash": "c78cd6657",
        "istio": "egressgateway",
        "service.istio.io/canonical-name": "istio-egressgateway",
        "chart": "gateways",
-       "release": "istio"
+       "release": "istio",
+       "app": "istio-egressgateway"
       },
       "ISTIO_PROXY_SHA": "istio-proxy:9b4239dee83dd8894bfc579d412ccd894cff2597",
-      "NAME": "istio-egressgateway-c78cd6657-wxwxk",
-      "NAMESPACE": "istio-system",
-      "EXCHANGE_KEYS": "NAME,NAMESPACE,INSTANCE_IPS,LABELS,OWNER,PLATFORM_METADATA,WORKLOAD_NAME,CANONICAL_TELEMETRY_SERVICE,MESH_ID,SERVICE_ACCOUNT",
-      "INSTANCE_IPS": "10.44.0.3"
+      "NAME": "istio-egressgateway-c78cd6657-wxwxk"
      },
      "locality": {},
      "hidden_envoy_deprecated_build_version": "9b4239dee83dd8894bfc579d412ccd894cff2597/1.13.1-dev/Clean/RELEASE/BoringSSL",
@@ -44,11 +44,11 @@
        "patch": 1
       },
       "metadata": {
+       "build.label": "dev",
        "build.type": "RELEASE",
        "ssl.version": "BoringSSL",
        "revision.status": "Clean",
-       "revision.sha": "9b4239dee83dd8894bfc579d412ccd894cff2597",
-       "build.label": "dev"
+       "revision.sha": "9b4239dee83dd8894bfc579d412ccd894cff2597"
       }
      },
      "extensions": [
@@ -589,18 +589,9 @@
           {
            "name": "envoy.http_connection_manager",
            "hidden_envoy_deprecated_config": {
-            "codec_type": "AUTO",
-            "http_filters": {
-             "name": "envoy.router"
-            },
-            "stat_prefix": "stats",
             "route_config": {
              "virtual_hosts": [
               {
-               "domains": [
-                "*"
-               ],
-               "name": "backend",
                "routes": [
                 {
                  "match": {
@@ -610,10 +601,19 @@
                   "cluster": "prometheus_stats"
                  }
                 }
-               ]
+               ],
+               "domains": [
+                "*"
+               ],
+               "name": "backend"
               }
              ]
-            }
+            },
+            "codec_type": "AUTO",
+            "http_filters": {
+             "name": "envoy.router"
+            },
+            "stat_prefix": "stats"
            }
           }
          ]
@@ -947,7 +947,7 @@
   },
   {
    "@type": "type.googleapis.com/envoy.admin.v3.ClustersConfigDump",
-   "version_info": "2020-05-14T03:16:33Z/21",
+   "version_info": "2020-05-14T03:59:54Z/25",
    "static_clusters": [
     {
      "cluster": {
@@ -4382,7 +4382,7 @@
      "last_updated": "2020-05-14T03:13:52.125Z"
     },
     {
-     "version_info": "2020-05-14T03:12:56Z/9",
+     "version_info": "2020-05-14T03:59:54Z/25",
      "cluster": {
       "@type": "type.googleapis.com/envoy.api.v2.Cluster",
       "name": "outbound|3000||grafana.istio-system.svc.cluster.local",
@@ -4415,9 +4415,76 @@
          }
         }
        }
+      ],
+      "transport_socket_matches": [
+       {
+        "name": "tlsMode-istio",
+        "match": {
+         "tlsMode": "istio"
+        },
+        "transport_socket": {
+         "name": "envoy.transport_sockets.tls",
+         "typed_config": {
+          "@type": "type.googleapis.com/envoy.api.v2.auth.UpstreamTlsContext",
+          "common_tls_context": {
+           "alpn_protocols": [
+            "istio-peer-exchange",
+            "istio"
+           ],
+           "tls_certificate_sds_secret_configs": [
+            {
+             "name": "default",
+             "sds_config": {
+              "api_config_source": {
+               "api_type": "GRPC",
+               "grpc_services": [
+                {
+                 "envoy_grpc": {
+                  "cluster_name": "sds-grpc"
+                 }
+                }
+               ]
+              }
+             }
+            }
+           ],
+           "combined_validation_context": {
+            "default_validation_context": {
+             "verify_subject_alt_name": [
+              "spiffe://cluster.local/ns/istio-system/sa/default"
+             ]
+            },
+            "validation_context_sds_secret_config": {
+             "name": "ROOTCA",
+             "sds_config": {
+              "api_config_source": {
+               "api_type": "GRPC",
+               "grpc_services": [
+                {
+                 "envoy_grpc": {
+                  "cluster_name": "sds-grpc"
+                 }
+                }
+               ]
+              }
+             }
+            }
+           }
+          },
+          "sni": "outbound_.3000_._.grafana.istio-system.svc.cluster.local"
+         }
+        }
+       },
+       {
+        "name": "tlsMode-disabled",
+        "match": {},
+        "transport_socket": {
+         "name": "envoy.transport_sockets.raw_buffer"
+        }
+       }
       ]
      },
-     "last_updated": "2020-05-14T03:13:04.644Z"
+     "last_updated": "2020-05-14T03:59:54.756Z"
     },
     {
      "version_info": "2020-05-14T03:12:56Z/9",
