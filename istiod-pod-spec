@@ -1,0 +1,110 @@
+Name:               istiod-794488bcbb-5q9c8
+Namespace:          istio-system
+Priority:           0
+PriorityClassName:  <none>
+Node:               node01/172.17.0.112
+Start Time:         Fri, 15 May 2020 08:10:36 +0000
+Labels:             app=istiod
+                    istio=pilot
+                    pod-template-hash=794488bcbb
+Annotations:        sidecar.istio.io/inject: false
+Status:             Running
+IP:                 10.40.0.1
+Controlled By:      ReplicaSet/istiod-794488bcbb
+Containers:
+  discovery:
+    Container ID:  docker://a7fb3c159247e2913d2ec7a7231fd35e33fd952aac5f3b9bc23797f097ba3ad7
+    Image:         docker.io/istio/pilot:1.5.4
+    Image ID:      docker-pullable://istio/pilot@sha256:264585198773ded066b1cb3cd0e2fefeb36c799438ca97169686971801553664
+    Ports:         8080/TCP, 15010/TCP, 15017/TCP
+    Host Ports:    0/TCP, 0/TCP, 0/TCP
+    Args:
+      discovery
+      --monitoringAddr=:15014
+      --log_output_level=default:info
+      --domain
+      cluster.local
+      --secureGrpcAddr=:15011
+      --trust-domain=cluster.local
+      --keepaliveMaxServerConnectionAge
+      30m
+      --disable-install-crds=true
+    State:          Running
+      Started:      Fri, 15 May 2020 08:10:48 +0000
+    Ready:          True
+    Restart Count:  0
+    Requests:
+      cpu:      10m
+      memory:   100Mi
+    Readiness:  http-get http://:8080/ready delay=5s timeout=5s period=5s #success=1 #failure=3
+    Environment Variables from:
+      istiod  ConfigMap  Optional: true
+    Environment:
+      JWT_POLICY:                                   first-party-jwt
+      PILOT_CERT_PROVIDER:                          istiod
+      POD_NAME:                                     istiod-794488bcbb-5q9c8 (v1:metadata.name)
+      POD_NAMESPACE:                                istio-system (v1:metadata.namespace)
+      GODEBUG:                                      gctrace=1
+      SERVICE_ACCOUNT:                               (v1:spec.serviceAccountName)
+      PILOT_TRACE_SAMPLING:                         100
+      CONFIG_NAMESPACE:                             istio-config
+      PILOT_ENABLE_PROTOCOL_SNIFFING_FOR_OUTBOUND:  true
+      PILOT_ENABLE_PROTOCOL_SNIFFING_FOR_INBOUND:   false
+      INJECTION_WEBHOOK_CONFIG_NAME:                istio-sidecar-injector
+      ISTIOD_ADDR:                                  istiod.istio-system.svc:15012
+      PILOT_EXTERNAL_GALLEY:                        false
+      CLUSTER_ID:                                   Kubernetes
+    Mounts:
+      /etc/cacerts from cacerts (ro)
+      /etc/istio/config from config-volume (rw)
+      /var/lib/istio/inject from inject (ro)
+      /var/lib/istio/local from istiod (ro)
+      /var/run/secrets/istio-dns from local-certs (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from istio-pilot-service-account-token-4zhk8 (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  local-certs:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     Memory
+    SizeLimit:  <unset>
+  istiod:
+    Type:      ConfigMap (a volume populated by a ConfigMap)
+    Name:      istiod
+    Optional:  true
+  cacerts:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  cacerts
+    Optional:    true
+  inject:
+    Type:      ConfigMap (a volume populated by a ConfigMap)
+    Name:      istio-sidecar-injector
+    Optional:  true
+  config-volume:
+    Type:      ConfigMap (a volume populated by a ConfigMap)
+    Name:      istio
+    Optional:  false
+  pilot-envoy-config:
+    Type:      ConfigMap (a volume populated by a ConfigMap)
+    Name:      pilot-envoy-config
+    Optional:  false
+  istio-pilot-service-account-token-4zhk8:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  istio-pilot-service-account-token-4zhk8
+    Optional:    false
+QoS Class:       Burstable
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/not-ready:NoExecute for 300s
+                 node.kubernetes.io/unreachable:NoExecute for 300s
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  10m   default-scheduler  Successfully assigned istio-system/istiod-794488bcbb-5q9c8 to node01
+  Normal  Pulling    10m   kubelet, node01    Pulling image "docker.io/istio/pilot:1.5.4"
+  Normal  Pulled     10m   kubelet, node01    Successfully pulled image "docker.io/istio/pilot:1.5.4"
+  Normal  Created    10m   kubelet, node01    Created container discovery
+  Normal  Started    10m   kubelet, node01    Started container discovery

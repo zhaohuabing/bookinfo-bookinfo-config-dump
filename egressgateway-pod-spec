@@ -1,0 +1,128 @@
+Name:               istio-egressgateway-c78cd6657-84qjj
+Namespace:          istio-system
+Priority:           0
+PriorityClassName:  <none>
+Node:               node01/172.17.0.112
+Start Time:         Fri, 15 May 2020 08:11:01 +0000
+Labels:             app=istio-egressgateway
+                    chart=gateways
+                    heritage=Tiller
+                    istio=egressgateway
+                    pod-template-hash=c78cd6657
+                    release=istio
+                    service.istio.io/canonical-name=istio-egressgateway
+                    service.istio.io/canonical-revision=1.5
+Annotations:        sidecar.istio.io/inject: false
+Status:             Running
+IP:                 10.40.0.4
+Controlled By:      ReplicaSet/istio-egressgateway-c78cd6657
+Containers:
+  istio-proxy:
+    Container ID:  docker://90dce636f9498bad8276246766cff258d481269a0a5187701f48f0775b209910
+    Image:         docker.io/istio/proxyv2:1.5.4
+    Image ID:      docker-pullable://istio/proxyv2@sha256:e16e2801b7fd93154e8fcb5f4e2fb1240d73349d425b8be90691d48e8b9bb944
+    Ports:         80/TCP, 443/TCP, 15443/TCP, 15090/TCP
+    Host Ports:    0/TCP, 0/TCP, 0/TCP, 0/TCP
+    Args:
+      proxy
+      router
+      --domain
+      $(POD_NAMESPACE).svc.cluster.local
+      --proxyLogLevel=warning
+      --proxyComponentLogLevel=misc:error
+      --log_output_level=default:info
+      --drainDuration
+      45s
+      --parentShutdownDuration
+      1m0s
+      --connectTimeout
+      10s
+      --serviceCluster
+      istio-egressgateway
+      --zipkinAddress
+      zipkin.istio-system:9411
+      --proxyAdminPort
+      15000
+      --statusPort
+      15020
+      --controlPlaneAuthPolicy
+      NONE
+      --discoveryAddress
+      istio-pilot.istio-system.svc:15012
+      --trust-domain=cluster.local
+    State:          Running
+      Started:      Fri, 15 May 2020 08:11:35 +0000
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     2
+      memory:  1Gi
+    Requests:
+      cpu:      10m
+      memory:   40Mi
+    Readiness:  http-get http://:15020/healthz/ready delay=1s timeout=1s period=2s #success=1 #failure=30
+    Environment:
+      JWT_POLICY:                   first-party-jwt
+      PILOT_CERT_PROVIDER:          istiod
+      NODE_NAME:                     (v1:spec.nodeName)
+      POD_NAME:                     istio-egressgateway-c78cd6657-84qjj (v1:metadata.name)
+      POD_NAMESPACE:                istio-system (v1:metadata.namespace)
+      INSTANCE_IP:                   (v1:status.podIP)
+      HOST_IP:                       (v1:status.hostIP)
+      SERVICE_ACCOUNT:               (v1:spec.serviceAccountName)
+      ISTIO_META_WORKLOAD_NAME:     istio-egressgateway
+      ISTIO_META_OWNER:             kubernetes://apis/apps/v1/namespaces/istio-system/deployments/istio-egressgateway
+      ISTIO_META_MESH_ID:           cluster.local
+      ISTIO_AUTO_MTLS_ENABLED:      true
+      ISTIO_META_POD_NAME:          istio-egressgateway-c78cd6657-84qjj (v1:metadata.name)
+      ISTIO_META_CONFIG_NAMESPACE:  istio-system (v1:metadata.namespace)
+      ISTIO_META_ROUTER_MODE:       sni-dnat
+      ISTIO_META_CLUSTER_ID:        Kubernetes
+    Mounts:
+      /etc/istio/egressgateway-ca-certs from egressgateway-ca-certs (ro)
+      /etc/istio/egressgateway-certs from egressgateway-certs (ro)
+      /etc/istio/pod from podinfo (rw)
+      /var/run/secrets/istio from istiod-ca-cert (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from istio-egressgateway-service-account-token-764h6 (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  istiod-ca-cert:
+    Type:      ConfigMap (a volume populated by a ConfigMap)
+    Name:      istio-ca-root-cert
+    Optional:  false
+  podinfo:
+    Type:  DownwardAPI (a volume populated by information about the pod)
+    Items:
+      metadata.labels -> labels
+      metadata.annotations -> annotations
+  egressgateway-certs:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  istio-egressgateway-certs
+    Optional:    true
+  egressgateway-ca-certs:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  istio-egressgateway-ca-certs
+    Optional:    true
+  istio-egressgateway-service-account-token-764h6:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  istio-egressgateway-service-account-token-764h6
+    Optional:    false
+QoS Class:       Burstable
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/not-ready:NoExecute for 300s
+                 node.kubernetes.io/unreachable:NoExecute for 300s
+Events:
+  Type     Reason       Age                From               Message
+  ----     ------       ----               ----               -------
+  Normal   Scheduled    11m                default-scheduler  Successfully assigned istio-system/istio-egressgateway-c78cd6657-84qjj to node01
+  Warning  FailedMount  11m                kubelet, node01    MountVolume.SetUp failed for volume "istiod-ca-cert" : couldn't propagate object cache: timed out waiting for the condition
+  Normal   Pulling      11m                kubelet, node01    Pulling image "docker.io/istio/proxyv2:1.5.4"
+  Normal   Pulled       11m                kubelet, node01    Successfully pulled image "docker.io/istio/proxyv2:1.5.4"
+  Normal   Created      11m                kubelet, node01    Created container istio-proxy
+  Normal   Started      11m                kubelet, node01    Started container istio-proxy
+  Warning  Unhealthy    11m (x2 over 11m)  kubelet, node01    Readiness probe failed: HTTP probe failed with statuscode: 503

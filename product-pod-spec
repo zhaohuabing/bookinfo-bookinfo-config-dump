@@ -1,0 +1,199 @@
+Name:               productpage-v1-7d6cfb7dfd-shb4m
+Namespace:          default
+Priority:           0
+PriorityClassName:  <none>
+Node:               node01/172.17.0.112
+Start Time:         Fri, 15 May 2020 08:12:13 +0000
+Labels:             app=productpage
+                    pod-template-hash=7d6cfb7dfd
+                    security.istio.io/tlsMode=istio
+                    service.istio.io/canonical-name=productpage
+                    service.istio.io/canonical-revision=v1
+                    version=v1
+Annotations:        sidecar.istio.io/status:
+                      {"version":"fca84600f9d5ec316cf1cf577da902f38bac258ab0fd595ee208ec0203dc0c6d","initContainers":["istio-init"],"containers":["istio-proxy"]...
+Status:             Running
+IP:                 10.40.0.10
+Controlled By:      ReplicaSet/productpage-v1-7d6cfb7dfd
+Init Containers:
+  istio-init:
+    Container ID:  docker://b2a4718d126d7f9e458dbe306362d136a8d43df9e005e2295b2c4dc54f225929
+    Image:         docker.io/istio/proxyv2:1.5.4
+    Image ID:      docker-pullable://istio/proxyv2@sha256:e16e2801b7fd93154e8fcb5f4e2fb1240d73349d425b8be90691d48e8b9bb944
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      istio-iptables
+      -p
+      15001
+      -z
+      15006
+      -u
+      1337
+      -m
+      REDIRECT
+      -i
+      *
+      -x
+      
+      -b
+      *
+      -d
+      15090,15020
+    State:          Terminated
+      Reason:       Completed
+      Exit Code:    0
+      Started:      Fri, 15 May 2020 08:12:38 +0000
+      Finished:     Fri, 15 May 2020 08:12:38 +0000
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     100m
+      memory:  50Mi
+    Requests:
+      cpu:        10m
+      memory:     10Mi
+    Environment:  <none>
+    Mounts:       <none>
+Containers:
+  productpage:
+    Container ID:   docker://0c6e510df325ec4d7807b9e5f1715f9e8a3af7a2ee1ca1bab7abc999b5b3b41b
+    Image:          docker.io/istio/examples-bookinfo-productpage-v1:1.15.0
+    Image ID:       docker-pullable://istio/examples-bookinfo-productpage-v1@sha256:0a5eb4795952372251d51f72834bccb7ea01a67cb72fd9b58b757cca103b7524
+    Port:           9080/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Fri, 15 May 2020 08:14:32 +0000
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /tmp from tmp (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from bookinfo-productpage-token-dksvm (ro)
+  istio-proxy:
+    Container ID:  docker://d646999aab7f176c6d02e8db87190c2f38daa88fcfc192401518510b61b26083
+    Image:         docker.io/istio/proxyv2:1.5.4
+    Image ID:      docker-pullable://istio/proxyv2@sha256:e16e2801b7fd93154e8fcb5f4e2fb1240d73349d425b8be90691d48e8b9bb944
+    Port:          15090/TCP
+    Host Port:     0/TCP
+    Args:
+      proxy
+      sidecar
+      --domain
+      $(POD_NAMESPACE).svc.cluster.local
+      --configPath
+      /etc/istio/proxy
+      --binaryPath
+      /usr/local/bin/envoy
+      --serviceCluster
+      productpage.$(POD_NAMESPACE)
+      --drainDuration
+      45s
+      --parentShutdownDuration
+      1m0s
+      --discoveryAddress
+      istiod.istio-system.svc:15012
+      --zipkinAddress
+      zipkin.istio-system:9411
+      --proxyLogLevel=warning
+      --proxyComponentLogLevel=misc:error
+      --connectTimeout
+      10s
+      --proxyAdminPort
+      15000
+      --concurrency
+      2
+      --controlPlaneAuthPolicy
+      NONE
+      --dnsRefreshRate
+      300s
+      --statusPort
+      15020
+      --trust-domain=cluster.local
+      --controlPlaneBootstrap=false
+    State:          Running
+      Started:      Fri, 15 May 2020 08:14:33 +0000
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     2
+      memory:  1Gi
+    Requests:
+      cpu:      10m
+      memory:   40Mi
+    Readiness:  http-get http://:15020/healthz/ready delay=1s timeout=1s period=2s #success=1 #failure=30
+    Environment:
+      JWT_POLICY:                    first-party-jwt
+      PILOT_CERT_PROVIDER:           istiod
+      CA_ADDR:                       istio-pilot.istio-system.svc:15012
+      POD_NAME:                      productpage-v1-7d6cfb7dfd-shb4m (v1:metadata.name)
+      POD_NAMESPACE:                 default (v1:metadata.namespace)
+      INSTANCE_IP:                    (v1:status.podIP)
+      SERVICE_ACCOUNT:                (v1:spec.serviceAccountName)
+      HOST_IP:                        (v1:status.hostIP)
+      ISTIO_META_POD_PORTS:          [
+                                         {"containerPort":9080,"protocol":"TCP"}
+                                     ]
+      ISTIO_META_APP_CONTAINERS:     [
+                                         productpage
+                                     ]
+      ISTIO_META_CLUSTER_ID:         Kubernetes
+      ISTIO_META_POD_NAME:           productpage-v1-7d6cfb7dfd-shb4m (v1:metadata.name)
+      ISTIO_META_CONFIG_NAMESPACE:   default (v1:metadata.namespace)
+      ISTIO_META_INTERCEPTION_MODE:  REDIRECT
+      ISTIO_META_WORKLOAD_NAME:      productpage-v1
+      ISTIO_META_OWNER:              kubernetes://apis/apps/v1/namespaces/default/deployments/productpage-v1
+      ISTIO_META_MESH_ID:            cluster.local
+      ISTIO_KUBE_APP_PROBERS:        {}
+    Mounts:
+      /etc/istio/pod from podinfo (rw)
+      /etc/istio/proxy from istio-envoy (rw)
+      /var/run/secrets/istio from istiod-ca-cert (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from bookinfo-productpage-token-dksvm (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  tmp:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     
+    SizeLimit:  <unset>
+  bookinfo-productpage-token-dksvm:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  bookinfo-productpage-token-dksvm
+    Optional:    false
+  istio-envoy:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     Memory
+    SizeLimit:  <unset>
+  podinfo:
+    Type:  DownwardAPI (a volume populated by information about the pod)
+    Items:
+      metadata.labels -> labels
+      metadata.annotations -> annotations
+  istiod-ca-cert:
+    Type:        ConfigMap (a volume populated by a ConfigMap)
+    Name:        istio-ca-root-cert
+    Optional:    false
+QoS Class:       Burstable
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/not-ready:NoExecute for 300s
+                 node.kubernetes.io/unreachable:NoExecute for 300s
+Events:
+  Type     Reason     Age   From               Message
+  ----     ------     ----  ----               -------
+  Normal   Scheduled  12m   default-scheduler  Successfully assigned default/productpage-v1-7d6cfb7dfd-shb4m to node01
+  Normal   Pulled     12m   kubelet, node01    Container image "docker.io/istio/proxyv2:1.5.4" already present on machine
+  Normal   Created    12m   kubelet, node01    Created container istio-init
+  Normal   Started    12m   kubelet, node01    Started container istio-init
+  Normal   Pulling    12m   kubelet, node01    Pulling image "docker.io/istio/examples-bookinfo-productpage-v1:1.15.0"
+  Normal   Pulled     10m   kubelet, node01    Successfully pulled image "docker.io/istio/examples-bookinfo-productpage-v1:1.15.0"
+  Normal   Created    10m   kubelet, node01    Created container productpage
+  Normal   Started    10m   kubelet, node01    Started container productpage
+  Normal   Pulled     10m   kubelet, node01    Container image "docker.io/istio/proxyv2:1.5.4" already present on machine
+  Normal   Created    10m   kubelet, node01    Created container istio-proxy
+  Normal   Started    10m   kubelet, node01    Started container istio-proxy
+  Warning  Unhealthy  10m   kubelet, node01    Readiness probe failed: HTTP probe failed with statuscode: 503

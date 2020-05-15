@@ -1,0 +1,193 @@
+Name:               details-v1-c5b5f496d-7rdg5
+Namespace:          default
+Priority:           0
+PriorityClassName:  <none>
+Node:               node01/172.17.0.112
+Start Time:         Fri, 15 May 2020 08:12:30 +0000
+Labels:             app=details
+                    pod-template-hash=c5b5f496d
+                    security.istio.io/tlsMode=istio
+                    service.istio.io/canonical-name=details
+                    service.istio.io/canonical-revision=v1
+                    version=v1
+Annotations:        sidecar.istio.io/status:
+                      {"version":"fca84600f9d5ec316cf1cf577da902f38bac258ab0fd595ee208ec0203dc0c6d","initContainers":["istio-init"],"containers":["istio-proxy"]...
+Status:             Running
+IP:                 10.40.0.13
+Controlled By:      ReplicaSet/details-v1-c5b5f496d
+Init Containers:
+  istio-init:
+    Container ID:  docker://9662549ebdae376d5bbfe93d9c2aa884dd5a13458eb38221591322bb8791ead7
+    Image:         docker.io/istio/proxyv2:1.5.4
+    Image ID:      docker-pullable://istio/proxyv2@sha256:e16e2801b7fd93154e8fcb5f4e2fb1240d73349d425b8be90691d48e8b9bb944
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      istio-iptables
+      -p
+      15001
+      -z
+      15006
+      -u
+      1337
+      -m
+      REDIRECT
+      -i
+      *
+      -x
+      
+      -b
+      *
+      -d
+      15090,15020
+    State:          Terminated
+      Reason:       Completed
+      Exit Code:    0
+      Started:      Fri, 15 May 2020 08:12:39 +0000
+      Finished:     Fri, 15 May 2020 08:12:39 +0000
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     100m
+      memory:  50Mi
+    Requests:
+      cpu:        10m
+      memory:     10Mi
+    Environment:  <none>
+    Mounts:       <none>
+Containers:
+  details:
+    Container ID:   docker://94a9953296063d50ea25d23546aa29605cbab0d2cb7cea95283510ffa424e39d
+    Image:          docker.io/istio/examples-bookinfo-details-v1:1.15.0
+    Image ID:       docker-pullable://istio/examples-bookinfo-details-v1@sha256:fce0bcbff0bed09116dacffca15695cd345e0c3788c15b0114a05f654ddecc17
+    Port:           9080/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Fri, 15 May 2020 08:14:45 +0000
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from bookinfo-details-token-8gx5t (ro)
+  istio-proxy:
+    Container ID:  docker://e37109b12d06e5500d0a83d0646bc0103b2d08aa049c9cafcef0fd75efb80b7d
+    Image:         docker.io/istio/proxyv2:1.5.4
+    Image ID:      docker-pullable://istio/proxyv2@sha256:e16e2801b7fd93154e8fcb5f4e2fb1240d73349d425b8be90691d48e8b9bb944
+    Port:          15090/TCP
+    Host Port:     0/TCP
+    Args:
+      proxy
+      sidecar
+      --domain
+      $(POD_NAMESPACE).svc.cluster.local
+      --configPath
+      /etc/istio/proxy
+      --binaryPath
+      /usr/local/bin/envoy
+      --serviceCluster
+      details.$(POD_NAMESPACE)
+      --drainDuration
+      45s
+      --parentShutdownDuration
+      1m0s
+      --discoveryAddress
+      istiod.istio-system.svc:15012
+      --zipkinAddress
+      zipkin.istio-system:9411
+      --proxyLogLevel=warning
+      --proxyComponentLogLevel=misc:error
+      --connectTimeout
+      10s
+      --proxyAdminPort
+      15000
+      --concurrency
+      2
+      --controlPlaneAuthPolicy
+      NONE
+      --dnsRefreshRate
+      300s
+      --statusPort
+      15020
+      --trust-domain=cluster.local
+      --controlPlaneBootstrap=false
+    State:          Running
+      Started:      Fri, 15 May 2020 08:14:47 +0000
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     2
+      memory:  1Gi
+    Requests:
+      cpu:      10m
+      memory:   40Mi
+    Readiness:  http-get http://:15020/healthz/ready delay=1s timeout=1s period=2s #success=1 #failure=30
+    Environment:
+      JWT_POLICY:                    first-party-jwt
+      PILOT_CERT_PROVIDER:           istiod
+      CA_ADDR:                       istio-pilot.istio-system.svc:15012
+      POD_NAME:                      details-v1-c5b5f496d-7rdg5 (v1:metadata.name)
+      POD_NAMESPACE:                 default (v1:metadata.namespace)
+      INSTANCE_IP:                    (v1:status.podIP)
+      SERVICE_ACCOUNT:                (v1:spec.serviceAccountName)
+      HOST_IP:                        (v1:status.hostIP)
+      ISTIO_META_POD_PORTS:          [
+                                         {"containerPort":9080,"protocol":"TCP"}
+                                     ]
+      ISTIO_META_APP_CONTAINERS:     [
+                                         details
+                                     ]
+      ISTIO_META_CLUSTER_ID:         Kubernetes
+      ISTIO_META_POD_NAME:           details-v1-c5b5f496d-7rdg5 (v1:metadata.name)
+      ISTIO_META_CONFIG_NAMESPACE:   default (v1:metadata.namespace)
+      ISTIO_META_INTERCEPTION_MODE:  REDIRECT
+      ISTIO_META_WORKLOAD_NAME:      details-v1
+      ISTIO_META_OWNER:              kubernetes://apis/apps/v1/namespaces/default/deployments/details-v1
+      ISTIO_META_MESH_ID:            cluster.local
+      ISTIO_KUBE_APP_PROBERS:        {}
+    Mounts:
+      /etc/istio/pod from podinfo (rw)
+      /etc/istio/proxy from istio-envoy (rw)
+      /var/run/secrets/istio from istiod-ca-cert (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from bookinfo-details-token-8gx5t (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  bookinfo-details-token-8gx5t:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  bookinfo-details-token-8gx5t
+    Optional:    false
+  istio-envoy:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     Memory
+    SizeLimit:  <unset>
+  podinfo:
+    Type:  DownwardAPI (a volume populated by information about the pod)
+    Items:
+      metadata.labels -> labels
+      metadata.annotations -> annotations
+  istiod-ca-cert:
+    Type:        ConfigMap (a volume populated by a ConfigMap)
+    Name:        istio-ca-root-cert
+    Optional:    false
+QoS Class:       Burstable
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/not-ready:NoExecute for 300s
+                 node.kubernetes.io/unreachable:NoExecute for 300s
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  13m   default-scheduler  Successfully assigned default/details-v1-c5b5f496d-7rdg5 to node01
+  Normal  Pulled     12m   kubelet, node01    Container image "docker.io/istio/proxyv2:1.5.4" already present on machine
+  Normal  Created    12m   kubelet, node01    Created container istio-init
+  Normal  Started    12m   kubelet, node01    Started container istio-init
+  Normal  Pulling    12m   kubelet, node01    Pulling image "docker.io/istio/examples-bookinfo-details-v1:1.15.0"
+  Normal  Pulled     10m   kubelet, node01    Successfully pulled image "docker.io/istio/examples-bookinfo-details-v1:1.15.0"
+  Normal  Created    10m   kubelet, node01    Created container details
+  Normal  Started    10m   kubelet, node01    Started container details
+  Normal  Pulled     10m   kubelet, node01    Container image "docker.io/istio/proxyv2:1.5.4" already present on machine
+  Normal  Created    10m   kubelet, node01    Created container istio-proxy
+  Normal  Started    10m   kubelet, node01    Started container istio-proxy

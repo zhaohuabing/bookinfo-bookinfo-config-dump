@@ -1,0 +1,138 @@
+Name:               istio-ingressgateway-568476969c-64zlg
+Namespace:          istio-system
+Priority:           0
+PriorityClassName:  <none>
+Node:               node01/172.17.0.112
+Start Time:         Fri, 15 May 2020 08:11:01 +0000
+Labels:             app=istio-ingressgateway
+                    chart=gateways
+                    heritage=Tiller
+                    istio=ingressgateway
+                    pod-template-hash=568476969c
+                    release=istio
+                    service.istio.io/canonical-name=istio-ingressgateway
+                    service.istio.io/canonical-revision=1.5
+Annotations:        sidecar.istio.io/inject: false
+Status:             Running
+IP:                 10.40.0.5
+Controlled By:      ReplicaSet/istio-ingressgateway-568476969c
+Containers:
+  istio-proxy:
+    Container ID:  docker://741e8407e326330edad064525ddca48e13da3d53e9b16e8716f90aaff430cb86
+    Image:         docker.io/istio/proxyv2:1.5.4
+    Image ID:      docker-pullable://istio/proxyv2@sha256:e16e2801b7fd93154e8fcb5f4e2fb1240d73349d425b8be90691d48e8b9bb944
+    Ports:         15020/TCP, 80/TCP, 443/TCP, 15029/TCP, 15030/TCP, 15031/TCP, 15032/TCP, 31400/TCP, 15443/TCP, 15011/TCP, 15012/TCP, 8060/TCP, 853/TCP, 15090/TCP
+    Host Ports:    0/TCP, 0/TCP, 0/TCP, 0/TCP, 0/TCP, 0/TCP, 0/TCP, 0/TCP, 0/TCP, 0/TCP, 0/TCP, 0/TCP, 0/TCP, 0/TCP
+    Args:
+      proxy
+      router
+      --domain
+      $(POD_NAMESPACE).svc.cluster.local
+      --proxyLogLevel=warning
+      --proxyComponentLogLevel=misc:error
+      --log_output_level=default:info
+      --drainDuration
+      45s
+      --parentShutdownDuration
+      1m0s
+      --connectTimeout
+      10s
+      --serviceCluster
+      istio-ingressgateway
+      --zipkinAddress
+      zipkin.istio-system:9411
+      --proxyAdminPort
+      15000
+      --statusPort
+      15020
+      --controlPlaneAuthPolicy
+      NONE
+      --discoveryAddress
+      istio-pilot.istio-system.svc:15012
+      --trust-domain=cluster.local
+    State:          Running
+      Started:      Fri, 15 May 2020 08:11:36 +0000
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     2
+      memory:  1Gi
+    Requests:
+      cpu:      10m
+      memory:   40Mi
+    Readiness:  http-get http://:15020/healthz/ready delay=1s timeout=1s period=2s #success=1 #failure=30
+    Environment:
+      JWT_POLICY:                   first-party-jwt
+      PILOT_CERT_PROVIDER:          istiod
+      ISTIO_META_USER_SDS:          true
+      CA_ADDR:                      istio-pilot.istio-system.svc:15012
+      NODE_NAME:                     (v1:spec.nodeName)
+      POD_NAME:                     istio-ingressgateway-568476969c-64zlg (v1:metadata.name)
+      POD_NAMESPACE:                istio-system (v1:metadata.namespace)
+      INSTANCE_IP:                   (v1:status.podIP)
+      HOST_IP:                       (v1:status.hostIP)
+      SERVICE_ACCOUNT:               (v1:spec.serviceAccountName)
+      ISTIO_META_WORKLOAD_NAME:     istio-ingressgateway
+      ISTIO_META_OWNER:             kubernetes://apis/apps/v1/namespaces/istio-system/deployments/istio-ingressgateway
+      ISTIO_META_MESH_ID:           cluster.local
+      ISTIO_AUTO_MTLS_ENABLED:      true
+      ISTIO_META_POD_NAME:          istio-ingressgateway-568476969c-64zlg (v1:metadata.name)
+      ISTIO_META_CONFIG_NAMESPACE:  istio-system (v1:metadata.namespace)
+      ISTIO_META_ROUTER_MODE:       sni-dnat
+      ISTIO_META_CLUSTER_ID:        Kubernetes
+    Mounts:
+      /etc/istio/ingressgateway-ca-certs from ingressgateway-ca-certs (ro)
+      /etc/istio/ingressgateway-certs from ingressgateway-certs (ro)
+      /etc/istio/pod from podinfo (rw)
+      /var/run/ingress_gateway from ingressgatewaysdsudspath (rw)
+      /var/run/secrets/istio from istiod-ca-cert (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from istio-ingressgateway-service-account-token-hzvc2 (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  istiod-ca-cert:
+    Type:      ConfigMap (a volume populated by a ConfigMap)
+    Name:      istio-ca-root-cert
+    Optional:  false
+  podinfo:
+    Type:  DownwardAPI (a volume populated by information about the pod)
+    Items:
+      metadata.labels -> labels
+      metadata.annotations -> annotations
+  ingressgatewaysdsudspath:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     
+    SizeLimit:  <unset>
+  ingressgateway-certs:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  istio-ingressgateway-certs
+    Optional:    true
+  ingressgateway-ca-certs:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  istio-ingressgateway-ca-certs
+    Optional:    true
+  istio-ingressgateway-service-account-token-hzvc2:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  istio-ingressgateway-service-account-token-hzvc2
+    Optional:    false
+QoS Class:       Burstable
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/not-ready:NoExecute for 300s
+                 node.kubernetes.io/unreachable:NoExecute for 300s
+Events:
+  Type     Reason       Age                From               Message
+  ----     ------       ----               ----               -------
+  Normal   Scheduled    11m                default-scheduler  Successfully assigned istio-system/istio-ingressgateway-568476969c-64zlg to node01
+  Warning  FailedMount  11m                kubelet, node01    MountVolume.SetUp failed for volume "ingressgateway-ca-certs" : couldn't propagate object cache: timed out waiting for the condition
+  Warning  FailedMount  11m (x2 over 11m)  kubelet, node01    MountVolume.SetUp failed for volume "ingressgateway-certs" : couldn't propagate object cache: timed out waiting for the condition
+  Warning  FailedMount  11m (x2 over 11m)  kubelet, node01    MountVolume.SetUp failed for volume "istio-ingressgateway-service-account-token-hzvc2" : couldn't propagate object cache: timed out waiting for the condition
+  Warning  FailedMount  11m (x2 over 11m)  kubelet, node01    MountVolume.SetUp failed for volume "istiod-ca-cert" : couldn't propagate object cache: timed out waiting for the condition
+  Normal   Pulling      11m                kubelet, node01    Pulling image "docker.io/istio/proxyv2:1.5.4"
+  Normal   Pulled       10m                kubelet, node01    Successfully pulled image "docker.io/istio/proxyv2:1.5.4"
+  Normal   Created      10m                kubelet, node01    Created container istio-proxy
+  Normal   Started      10m                kubelet, node01    Started container istio-proxy
+  Warning  Unhealthy    10m (x3 over 10m)  kubelet, node01    Readiness probe failed: HTTP probe failed with statuscode: 503
